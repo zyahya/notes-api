@@ -8,10 +8,12 @@ namespace Notes.Api.Services;
 public class AuthService : IAuthService
 {
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IJwtProvider _jwtProvider;
 
-    public AuthService(UserManager<ApplicationUser> userManager)
+    public AuthService(UserManager<ApplicationUser> userManager, IJwtProvider jwtProvider)
     {
         _userManager = userManager;
+        _jwtProvider = jwtProvider;
     }
 
     public async Task<AuthenticationResponse?> GetTokenAsync(string email, string password, CancellationToken cancellationToken)
@@ -28,9 +30,15 @@ public class AuthService : IAuthService
             return null;
         }
 
-        // TODO: Generate and return jwt token
+        var (token, expiresIn) = _jwtProvider.GenerateToken(user);
 
-        // TODO: Return AuthenticationResponse
-        return null;
+        return new AuthenticationResponse(
+            user.Id,
+            user.Email,
+            user.FirstName,
+            user.LastName,
+            token,
+            expiresIn
+        );
     }
 }
