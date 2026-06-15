@@ -19,6 +19,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(connectionString));
 
 builder.Services.AddScoped<INotesService, NotesService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services
     .AddIdentityApiEndpoints<ApplicationUser>()
