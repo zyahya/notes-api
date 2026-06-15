@@ -14,11 +14,19 @@ public class AuthController : ControllerBase
         _authService = authService;
     }
 
-    [HttpPost]
+    [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request, CancellationToken cancellationToken)
     {
         var result = await _authService.GetTokenAsync(request.Email, request.Password, cancellationToken);
 
         return result is null ? BadRequest("Invalid email or password.") : Ok(result);
+    }
+
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken cancellationToken)
+    {
+        var result = await _authService.RegisterAsync(request, cancellationToken);
+
+        return result is null ? BadRequest("Registration fails.") : Ok(result);
     }
 }
