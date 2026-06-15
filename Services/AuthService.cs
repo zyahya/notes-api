@@ -1,6 +1,11 @@
-﻿namespace Notes.Api.Services;
+﻿using Notes.Api.Contracts.Authentication;
 
-public class AuthService
+namespace Notes.Api.Services;
+
+public class AuthService : IAuthService
 {
-
+    public Task<AuthenticationResponse?> GetTokenAsync(string email, string password, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
 }
