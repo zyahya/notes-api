@@ -22,7 +22,7 @@ builder.Services.AddScoped<INotesService, NotesService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services
-    .AddIdentityApiEndpoints<ApplicationUser>()
+    .AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 var app = builder.Build();
