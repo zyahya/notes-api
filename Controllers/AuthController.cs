@@ -1,3 +1,4 @@
+using Notes.Api.Abstractions;
 using Notes.Api.Contracts.Authentication;
 using Notes.Api.Services;
 
@@ -19,7 +20,9 @@ public class AuthController : ControllerBase
     {
         var result = await _authService.GetTokenAsync(request.Email, request.Password, cancellationToken);
 
-        return result is null ? BadRequest("Invalid email or password.") : Ok(result);
+        return result.IsSuccess
+            ? Ok(result)
+            : result.ToProblem();
     }
 
     [HttpPost("register")]
@@ -27,6 +30,8 @@ public class AuthController : ControllerBase
     {
         var result = await _authService.RegisterAsync(request, cancellationToken);
 
-        return result is null ? BadRequest("Registration fails.") : Ok(result);
+        return result.IsSuccess
+            ? Ok(result)
+            : result.ToProblem();
     }
 }
