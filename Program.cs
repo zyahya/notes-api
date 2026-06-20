@@ -39,7 +39,7 @@ builder.Services
     .AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-var jwtSettings = builder.Configuration.GetSection(JwtOptions.Section).Get<JwtOptions>()!;
+var jwtSettings = builder.Configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>()!;
 
 builder.Services.AddAuthentication(options =>
 {
@@ -63,9 +63,10 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.Configure<JwtOptions>(
-    builder.Configuration.GetSection(JwtOptions.Section)
-);
+builder.Services.AddOptions<JwtOptions>()
+    .BindConfiguration(JwtOptions.SectionName)
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
 
 var app = builder.Build();
 
