@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 using Notes.Api;
+using Notes.Api.OpenApi;
 using Notes.Api.Services;
 
 using Scalar.AspNetCore;
@@ -67,6 +68,10 @@ builder.Services.AddOptions<JwtOptions>()
     .BindConfiguration(JwtOptions.SectionName)
     .ValidateDataAnnotations()
     .ValidateOnStart();
+
+builder.Services.AddOpenApi(
+    options => options.AddDocumentTransformer<BearerSecuritySchemeTransformer>()
+);
 
 var app = builder.Build();
 
