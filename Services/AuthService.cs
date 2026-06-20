@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
+using Notes.Api.Abstractions;
 using Notes.Api.Contracts.Authentication;
 
 namespace Notes.Api.Services;
 
-// TODO: Return standard error objects
 public class AuthService : IAuthService
 {
     private readonly UserManager<ApplicationUser> _userManager;
@@ -17,39 +17,39 @@ public class AuthService : IAuthService
         _jwtProvider = jwtProvider;
     }
 
-    public async Task<AuthenticationResponse?> GetTokenAsync(string email, string password, CancellationToken cancellationToken)
+    public async Task<Result<AuthenticationResponse>> GetTokenAsync(string email, string password, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByEmailAsync(email);
 
         if (user is null)
         {
-            return null;
+            return Result.Failure<AuthenticationResponse>(UserError.InvalidCredentials);
         }
 
         if (!await _userManager.CheckPasswordAsync(user, password))
         {
-            return null;
+            return Result.Failure<AuthenticationResponse>(UserError.InvalidCredentials);
         }
 
         var (token, expiresIn) = _jwtProvider.GenerateToken(user);
 
-        return new AuthenticationResponse(
+        return Result.Success(new AuthenticationResponse(
             user.Id,
             user.Email,
             user.FirstName,
             user.LastName,
             token,
             expiresIn
-        );
+        ));
     }
 
-    public async Task<AuthenticationResponse?> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken)
+    public async Task<Result<AuthenticationResponse>> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken)
     {
         var isEmailRegistered = await _userManager.Users.AnyAsync(x => x.Email == request.Email, cancellationToken: cancellationToken);
 
         if (isEmailRegistered)
         {
-            return null;
+            return Result.Failure<AuthenticationResponse>(UserError.DuplicateEmail);
         }
 
         var user = new ApplicationUser
@@ -64,18 +64,19 @@ public class AuthService : IAuthService
 
         if (!result.Succeeded)
         {
-            return null;
+            var error = result.Errors.First();
+            return Result.Failure<AuthenticationResponse>(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
         }
 
         var (token, expiresIn) = _jwtProvider.GenerateToken(user);
 
-        return new AuthenticationResponse(
+        return Result.Success(new AuthenticationResponse(
             user.Id,
             user.Email,
             user.FirstName,
             user.LastName,
             token,
             expiresIn
-        );
+        ));
     }
 }
