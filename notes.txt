@@ -1,4 +1,0 @@
-Development test user:
-
-Email: test@test.test
-Password: Test@test.test0
