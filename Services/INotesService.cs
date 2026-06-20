@@ -2,8 +2,8 @@
 
 public interface INotesService
 {
-    Task<NoteResponse?> GetAsync(int id, CancellationToken cancellationToken);
-    Task<IEnumerable<NoteResponse>> GetAllAsync(CancellationToken cancellationToken);
-    Task<NoteResponse> AddAsync(AddNoteRequest request, CancellationToken cancellationToken);
-    Task<bool> DeleteAsync(int id, CancellationToken cancellationToken);
+    Task<NoteResponse?> GetAsync(int id, string userId, CancellationToken cancellationToken);
+    Task<IEnumerable<NoteResponse>> GetAllAsync(string userId, CancellationToken cancellationToken);
+    Task<NoteResponse> AddAsync(AddNoteRequest request, string userId, CancellationToken cancellationToken);
+    Task<bool> DeleteAsync(int id, string userId, CancellationToken cancellationToken);
 }
