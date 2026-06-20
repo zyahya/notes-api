@@ -21,7 +21,7 @@ public class AuthController : ControllerBase
         var result = await _authService.GetTokenAsync(request.Email, request.Password, cancellationToken);
 
         return result.IsSuccess
-            ? Ok(result)
+            ? Ok(result.Value)
             : result.ToProblem();
     }
 
@@ -31,7 +31,7 @@ public class AuthController : ControllerBase
         var result = await _authService.RegisterAsync(request, cancellationToken);
 
         return result.IsSuccess
-            ? Ok(result)
+            ? Ok(result.Value)
             : result.ToProblem();
     }
 }
