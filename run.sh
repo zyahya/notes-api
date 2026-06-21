@@ -1,2 +1,2 @@
 #!/bin/bash
-dotnet run ./Notes.Api.csproj --launch-profile https
+dotnet run --project ./Notes.Api/Notes.Api.csproj --launch-profile https
